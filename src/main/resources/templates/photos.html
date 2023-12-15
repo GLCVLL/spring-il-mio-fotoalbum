@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>My Photo</title>
+
+<!-- Bootstrap CSS -->
+<link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}"/>
+</head>
+<body>
+	
+	<header>      
+        <div class="d-flex flex-row-reverse me-2" th:if="${#authorization.expression('isAuthenticated()')}">
+            <h6>Welcome, <span th:text="${#authentication.name}"></span>! <a class="btn btn-primary" th:href="@{/logout}">Logout</a></h6>
+        </div>
+        <div class="d-flex flex-row-reverse me-2" th:unless="${#authorization.expression('isAuthenticated()')}">
+            <h6>Not logged in. <a class="btn btn-primary" th:href="@{/login}">Login</a></h6>
+        </div>
+    </header>
+<div class="container">
+    
+    <form class="my-4">
+        <label for="search">Search by Title:</label>
+        <input type="text" id="search" name="title" th:value="${title}">
+        <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+    
+    <h1>Photos:</h1>
+            
+    <ul th:if="${not #lists.isEmpty(photos)}">
+        <li th:each="photo : ${photos}" th:object="${photo}">
+            <img th:src="${photo.url}" alt="Photo Image" style="width:100px; height:auto;">
+            <a th:href="@{/photos/{id}(id=*{id})}">
+                <p th:text="${photo.title}"></p>
+            </a>
+        </li>
+    </ul>
+    <div sec:authorize="hasAuthority('ADMIN')">
+            <a class="btn btn-success my-4" href="/photos/create">Create a New Photo</a> 	
+	</div>   
+ 
+    <div th:if="${#lists.isEmpty(photos)}">
+        <p>No photos found</p>
+        <a class="btn btn-primary" href="/">Back</a>
+    </div>
+</div>
+
+
+<!-- Bootstrap Bundle with Popper -->
+<script th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

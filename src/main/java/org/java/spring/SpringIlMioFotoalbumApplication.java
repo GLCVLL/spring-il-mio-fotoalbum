@@ -1,5 +1,10 @@
 package org.java.spring;
 
+import org.java.spring.auth.conf.AuthConf;
+import org.java.spring.auth.db.pojo.Role;
+import org.java.spring.auth.db.pojo.User;
+import org.java.spring.auth.db.service.RoleService;
+import org.java.spring.auth.db.service.UserService;
 import org.java.spring.db.pojo.Category;
 import org.java.spring.db.pojo.Photo;
 import org.java.spring.db.service.CategoryService;
@@ -8,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class SpringIlMioFotoalbumApplication implements CommandLineRunner {
@@ -17,6 +23,15 @@ public class SpringIlMioFotoalbumApplication implements CommandLineRunner {
 	
 	@Autowired
 	private CategoryService categoryService;
+	
+	@Autowired
+	private RoleService roleService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringIlMioFotoalbumApplication.class, args);
@@ -59,7 +74,23 @@ public class SpringIlMioFotoalbumApplication implements CommandLineRunner {
 		photoService.save(new Photo("High Jump", "An athlete performing a high jump", "https://picsum.photos/300?random=6", true, sportsAction));
 		photoService.save(new Photo("Gourmet Meal", "Artistically presented gourmet meal", "https://picsum.photos/300?random=7", true, foodPhotography));
 		photoService.save(new Photo("Colorful Abstract", "A colorful and abstract painting", "https://picsum.photos/300?random=8", true, abstractArt));
-		photoService.save(new Photo("Wildlife in Africa", "A lion roaming in the African savanna", "https://picsum.photos/300?random=9", true, animalsWildlife));	
+		photoService.save(new Photo("Wildlife in Africa", "A lion roaming in the African savanna", "https://picsum.photos/300?random=9", true, animalsWildlife));
+		
+		
+		// AUTH
+	    
+	    Role roleUser = new Role("USER");
+		Role roleAdmin = new Role("ADMIN");
+		
+		roleService.save(roleUser);
+		roleService.save(roleAdmin);
+		
+		String password = AuthConf.passwordEncoder().encode("password");
+		
+		User heroUser = new User("heroUser", password, roleUser);
+		User heroAdmin = new User("heroAdmin", password, roleAdmin);
+		
+		userService.save(heroUser);
+		userService.save(heroAdmin);
 	}
-
 }
