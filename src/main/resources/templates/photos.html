@@ -37,7 +37,7 @@
     </ul>
     <div sec:authorize="hasAuthority('ADMIN')">
             <a class="btn btn-success my-4" href="/photos/create">Create a New Photo</a> 	
-	</div>   
+	</div> 
  
     <div th:if="${#lists.isEmpty(photos)}">
         <p>No photos found</p>

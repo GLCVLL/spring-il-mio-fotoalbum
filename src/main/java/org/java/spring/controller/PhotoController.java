@@ -3,8 +3,10 @@ package org.java.spring.controller;
 import java.util.List;
 
 import org.java.spring.db.pojo.Category;
+import org.java.spring.db.pojo.ContactMessage;
 import org.java.spring.db.pojo.Photo;
 import org.java.spring.db.service.CategoryService;
+import org.java.spring.db.service.ContactMessageService;
 import org.java.spring.db.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +30,9 @@ public class PhotoController {
 	
 	@Autowired
 	private CategoryService categoryService;
+	
+	@Autowired
+	private ContactMessageService cmService;
 	
 	@GetMapping
 	public String getPhotos(Model model, @RequestParam(required = false) String title) {
@@ -92,6 +97,13 @@ public class PhotoController {
 
 	    redirectAttributes.addFlashAttribute("deletedPhoto", photo);
 
+	    return "redirect:/";
+	}
+	
+	@PostMapping("/submit-contact")
+	public String submitContact(@RequestParam String email, @RequestParam String message) {
+	    ContactMessage contactMessage = new ContactMessage(email, message);
+	    cmService.saveMessage(contactMessage);
 	    return "redirect:/";
 	}
 
