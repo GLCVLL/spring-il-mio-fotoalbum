@@ -11,8 +11,8 @@ public class ContactMessageService {
 	@Autowired
 	private ContactMessageRepo cmRepo;
 	
-	public void saveMessage(ContactMessage message) {
-		cmRepo.save(message);
+	public ContactMessage saveMessage(ContactMessage contactMessage) {
+		return cmRepo.save(contactMessage);
     }
 
 }

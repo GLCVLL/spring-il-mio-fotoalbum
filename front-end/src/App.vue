@@ -1,30 +1,70 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex align-item-center justify-content-center">
+    <div>
+      <img src="./assets/photoLogo.jpg" alt="Logo">
+    </div>
+  </nav>
+  <div class="container mt-4">
+    <photo-form v-if="creatingPhoto" @back="creatingPhoto = false" @created="photoCreated" />
+    <div v-else>
+      <photo-index v-if="photos && photoActive == null" :photos="photos" @open-photo="openPhoto" />
+      <photo-show v-else-if="photoActive" :photo="photoActive" @close-photo="closePhoto" @delete-photo="deletePhoto" />
+    </div>
+    <div v-if="!creatingPhoto && photoActive == null">
+      <button class="btn btn-primary mb-3" @click="creatingPhoto = true">
+        Aggiungi una nuova foto
+      </button>
+    </div>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
+<script setup>
+// IMPORT LIBS
+import { onMounted, ref } from 'vue';
+import axios from 'axios';
+
+// IMPORT COMPONENTS
+import PhotoIndex from './components/PhotoIndex.vue';
+import PhotoShow from './components/PhotoShow.vue';
+import PhotoForm from './components/PhotoForm.vue';
+
+// DATA
+const photos = ref(null);
+const photoActive = ref(null);
+const creatingPhoto = ref(false);
+
+// FUNCTIONS
+const openPhoto = (id) => {
+  photos.value.forEach((photo) => {
+    if (photo.id === id) {
+      photoActive.value = photo;
+    }
+  });
+};
+const closePhoto = (update) => {
+  photoActive.value = null;
+  if (update) updatePhotos();
+};
+const photoCreated = () => {
+  creatingPhoto.value = false;
+  updatePhotos();
+};
+const updatePhotos = async () => {
+  const data = await axios.get("http://localhost:8080/api/photos");
+  photos.value = data.data;
+};
+const deletePhoto = () => {
+  photoActive.value = null;
+  updatePhotos();
+};
+
+// HOOKS
+onMounted(updatePhotos);
+</script>
+
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+img {
+  max-width: 100px;
+  height: auto;
 }
 </style>
