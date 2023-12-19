@@ -24,6 +24,10 @@ public class UserService implements UserDetailsService {
 		
 		return userRepo.findById(id).get();
 	}
+	
+	public User findByUsername(String username) {
+		return userRepo.findByUsername(username);
+	}
 	public void save(User user) {
 		
 		userRepo.save(user);

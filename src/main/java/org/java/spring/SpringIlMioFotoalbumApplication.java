@@ -6,8 +6,10 @@ import org.java.spring.auth.db.pojo.User;
 import org.java.spring.auth.db.service.RoleService;
 import org.java.spring.auth.db.service.UserService;
 import org.java.spring.db.pojo.Category;
+import org.java.spring.db.pojo.ContactMessage;
 import org.java.spring.db.pojo.Photo;
 import org.java.spring.db.service.CategoryService;
+import org.java.spring.db.service.ContactMessageService;
 import org.java.spring.db.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -29,6 +31,9 @@ public class SpringIlMioFotoalbumApplication implements CommandLineRunner {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private ContactMessageService contactMessaggeService;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -64,6 +69,20 @@ public class SpringIlMioFotoalbumApplication implements CommandLineRunner {
 		categoryService.save(abstractArt);
 		categoryService.save(animalsWildlife);
 		
+//		Messages
+		ContactMessage messaggio1 = new ContactMessage("indirizzo.mail.it", "Ciao mi piacciono le tue foto");
+		ContactMessage messaggio2 = new ContactMessage("indirizzo.mail.com", "Che bella foto!");
+		ContactMessage messaggio3 = new ContactMessage("indirizzo.mail.org", "WOW! GREAT! AWESOME!");
+		ContactMessage messaggio4 = new ContactMessage("indirizzo.mail.eu", "Ciao potrei acquistare una tua foto?");
+		ContactMessage messaggio5 = new ContactMessage("indirizzo.mail.io", "Bella foto!");
+		
+		
+		contactMessaggeService.save(messaggio1);
+		contactMessaggeService.save(messaggio2);				
+		contactMessaggeService.save(messaggio3);
+		contactMessaggeService.save(messaggio4);
+		contactMessaggeService.save(messaggio5);
+		
 		// PHOTOS
 		
 		photoService.save(new Photo("Sunset Over Mountains", "A breathtaking sunset view over the mountains", "https://picsum.photos/300?random=1", true, nature));
@@ -81,16 +100,20 @@ public class SpringIlMioFotoalbumApplication implements CommandLineRunner {
 	    
 	    Role roleUser = new Role("USER");
 		Role roleAdmin = new Role("ADMIN");
+		Role roleSuperAdmin = new Role("SUPERADMIN");
 		
 		roleService.save(roleUser);
 		roleService.save(roleAdmin);
+		roleService.save(roleSuperAdmin);
 		
 		String password = AuthConf.passwordEncoder().encode("password");
 		
 		User heroUser = new User("heroUser", password, roleUser);
 		User heroAdmin = new User("heroAdmin", password, roleAdmin);
+		User heroSuperAdmin = new User("heroSuperAdmin", password, roleSuperAdmin);
 		
 		userService.save(heroUser);
 		userService.save(heroAdmin);
+		userService.save(heroSuperAdmin);
 	}
 }

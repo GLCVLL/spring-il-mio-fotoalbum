@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.validator.constraints.Length;
+import org.java.spring.auth.db.pojo.User;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,7 +14,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -37,6 +40,10 @@ public class Photo {
     
     @ManyToMany
 	private List<Category> categories;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     
     //CONSTRUCTOR
     
@@ -83,6 +90,15 @@ public class Photo {
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
+	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
 	@JsonProperty("categories")
 	public List<Category> getCategories() {
 		return categories;

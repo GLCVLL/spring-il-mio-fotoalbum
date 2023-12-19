@@ -7,8 +7,7 @@
                     Photo: {{ photo.title }}
                 </h5>
                 <p class="card-text">{{ photo.description }}</p>
-                <button class="btn btn-warning me-2" @click="photoUpdate = true">Edit</button>
-                <button class="btn btn-danger ml-2" @click="deletePhoto(photo.id)">Delete</button>
+
             </div>
         </div>
         <a class="btn btn-primary my-3" @click="$emit('closePhoto', photo != selectedPhoto)">Back to list</a>
@@ -39,19 +38,7 @@ const selectedPhoto = ref(props.photo);
 // EMITS
 const emits = defineEmits(["closePhoto", "deletePhoto"]);
 
-// FUNCTIONS
-const deletePhoto = async (id) => {
-    const data = await axios.delete(
-        `http://localhost:8080/api/photos/${id}`
-    );
-    console.log("data", data);
 
-    emits("deletePhoto");
-}
-const updatedPhoto = (newPhoto) => {
-    photoUpdate.value = false;
-    selectedPhoto.value = newPhoto;
-}
 </script>
 
 <style scoped>

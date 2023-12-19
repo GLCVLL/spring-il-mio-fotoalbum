@@ -2,6 +2,9 @@ package org.java.spring.controller;
 
 import java.util.List;
 
+import org.java.spring.auth.conf.AuthConf;
+import org.java.spring.auth.db.pojo.User;
+import org.java.spring.auth.db.service.UserService;
 import org.java.spring.db.pojo.Category;
 import org.java.spring.db.pojo.ContactMessage;
 import org.java.spring.db.pojo.Photo;
@@ -33,6 +36,9 @@ public class PhotoController {
 	
 	@Autowired
 	private ContactMessageService cmService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@GetMapping
 	public String getPhotos(Model model, @RequestParam(required = false) String title) {
@@ -103,7 +109,7 @@ public class PhotoController {
 	@PostMapping("/submit-contact")
 	public String submitContact(@RequestParam String email, @RequestParam String message) {
 	    ContactMessage contactMessage = new ContactMessage(email, message);
-	    cmService.saveMessage(contactMessage);
+	    cmService.save(contactMessage);
 	    return "redirect:/";
 	}
 
@@ -120,6 +126,28 @@ public class PhotoController {
 	    }
 
 	    return "redirect:/";
+	}
+	
+	@GetMapping("/signup")
+	public String signup(Model model) {
+		
+		model.addAttribute("user", new User());
+		return "RegistrationForm";
+	}
+	@PostMapping("/signup")
+	public String storeUser(Model model, @Valid @ModelAttribute User user, BindingResult bindingResult) {
+
+		if (bindingResult.hasErrors()) {
+			System.out.println("Errors: \n" + bindingResult);
+			model.addAttribute("user", user);
+			return "RegistrationForm";
+		}
+
+		System.out.println("utente " + user.getUsername() + " registrato");
+		String pass = AuthConf.passwordEncoder().encode(user.getPassword());
+		user.setPassword(pass);
+		userService.save(user);
+		return "redirect:/login";
 	}
 
 }
