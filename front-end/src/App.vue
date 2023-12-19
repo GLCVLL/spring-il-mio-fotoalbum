@@ -1,21 +1,20 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex align-item-center justify-content-center">
-    <div>
-      <img src="./assets/photoLogo.jpg" alt="Logo">
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex align-item-center justify-content-center">
+      <div>
+        <img src="./assets/photoLogo.jpg" alt="Logo">
+      </div>
+    </nav>
+  </header>
+  <main>
+    <div class="container mt-4">
+      <photo-form v-if="creatingPhoto" @back="creatingPhoto = false" @created="photoCreated" />
+      <div v-else>
+        <photo-index v-if="photos && photoActive == null" :photos="photos" @open-photo="openPhoto" />
+        <photo-show v-else-if="photoActive" :photo="photoActive" @close-photo="closePhoto" @delete-photo="deletePhoto" />
+      </div>
     </div>
-  </nav>
-  <div class="container mt-4">
-    <photo-form v-if="creatingPhoto" @back="creatingPhoto = false" @created="photoCreated" />
-    <div v-else>
-      <photo-index v-if="photos && photoActive == null" :photos="photos" @open-photo="openPhoto" />
-      <photo-show v-else-if="photoActive" :photo="photoActive" @close-photo="closePhoto" @delete-photo="deletePhoto" />
-    </div>
-    <div v-if="!creatingPhoto && photoActive == null">
-      <button class="btn btn-primary mb-3" @click="creatingPhoto = true">
-        Aggiungi una nuova foto
-      </button>
-    </div>
-  </div>
+  </main>
 </template>
 
 <script setup>
